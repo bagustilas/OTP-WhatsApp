@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP WHASTAPP</title>
+     <!-- Custom fonts for this template-->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="container p-5">
+  <div class="row">
+    <div class="col-sm">
+    
+    </div>
+    <div class="col-sm">
+	<div class="card shadow-sm">
+        <div class="progress">
+            <div id="bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
+          </div>
+        <img src="https://vafloc01.s3.amazonaws.com/WBStatic/site1102601/dist/img/loader.gif" class="card-img-top" id="qrcode" alt="loli">
+        <div class="card-body">
+            <h5 class="card-title"><span class="text-success"><i class="fab fa-whatsapp"></i> WHASTAPP API - 
+                <a href="#" class="disco small">Disconect <span id="users"></span></a></h5>
+                <p class="card-text small">OTP-WA versio 1.0 </p>
+                <ul class="list-group list-group-flush menu">
+                    <li class="list-group-item"><a href="#" data-toggle="modal" data-target="#exampleModal">Kirim Pesan</a> | <a href="#" data-toggle="modal" data-target="#broadcastModal">Kirim Masal</a></li>
+                </ul>
+                
+				<ul class="list-group list-group-flush logs small">
+                </ul>
+                <div class="wrapper">
+                    <input class="form-control" id="apikey" type="text" value="" placeholder="Click on the button to generate a new API key ..."  />
+                    <button class="form-control" id="keygen">Generate API Key</button>
+                </div>
+        </div>
+        <div class="card-footer small">
+                build with <span class="text-danger"> &#10084;</span> <a href="https://bagustilas.github.io/">@bagus.tilas</a> | <a class="out" href="http://localhost:3000/logout">Keluar</a>
+        </div>
+    </div>
+    </div>
+    <div class="col-sm">
+    </div>
+  </div>
+</div>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="exampleFormControlInput1" class="form-label">Send To</label>
+                    <input type="number" class="form-control number" id="number" placeholder="0881xxxxxxxx">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Message </label>
+                    <textarea class="form-control pesan" id="pesan" rows="3" placeholder="Send Message with love"></textarea>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary btn-lg" id="sendMsg">
+                        Send Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+     <!-- Modal -->
+     <div class="modal fade" id="broadcastModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Broadcast To </label>
+                    <textarea class="form-control" id="numberCast" rows="6" placeholder=" 0881xxxxxxxx , 0881xxxxxxxx"></textarea>
+                </div>
+                <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label">Message </label>
+                    <textarea class="form-control" id="pesanCast" rows="3" placeholder="Send Message Love"></textarea>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="button" class="btn btn-primary btn-lg" id="sendBroadcast">
+                        Send Message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"></script>
+   <script>
+		$(document).ready(function() {
+
+			var socket = io('http://localhost:3000', {
+                transports: ['websocket',
+                    'polling',
+                    'flashsocket'
+                ]
+            });
+
+            var users = window.localStorage.getItem("users");
+            var getApi = window.localStorage.getItem("apikey");
+
+            document.getElementById('users').innerHTML = users;
+            document.getElementById('apikey').value =getApi;
+
+            
+            $('.disco').hide();
+
+            $('#sendMsg').on('click', function(event) {
+                
+                var n = $("#number").val();
+                var p = $("#pesan").val();
+                var url = "http://localhost:3000/api/v2/send-msg";
+
+                $.ajax(url, {
+                    dataType: 'json', // type of response data
+                    timeout: 500,     // timeout milliseconds
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    data: { number: n, message: p},
+                    success: function (data,status,xhr) {
+                        console.log(data);
+                        move();
+                    },
+                    error: function( jqXhr, textStatus, errorThrown ){
+                        console.log( errorThrown );
+                        move();
+                    }
+                });          
+            });
+
+            $('#sendBroadcast').on('click', function(event) {
+                
+                var n = $("#numberCast").val();
+                var p = $("#pesanCast").val();
+                
+                const x = n.split(",");
+                x.forEach(function(r, key){
+                    send(r,p);
+                    move();
+                });
+                
+            });
+
+            $('.out').on('click', function(event) {
+                clearStorage();
+            });
+            
+            function send(x,y){
+                var url = "http://localhost:3000/api/v2/send-msg";
+                $.ajax(url, {
+                    dataType: 'json', // type of response data
+                    timeout: 500,     // timeout milliseconds
+                    type: "POST",
+                    data: { number: x, message: y},
+                    success: function (data,status,xhr) {
+                        console.log(data);
+                    }
+                });       
+            }
+
+            function clearStorage(){
+                localStorage.clear();
+            }
+
+            var i = 0;
+            function move() {
+            if (i == 0) {
+                i = 1;
+                var elem = document.getElementById("bar");
+                var width = 1;
+                var id = setInterval(frame, 100);
+                function frame() {
+                if (width >= 100) {
+                    clearInterval(id);
+                    i = 0;
+                    elem.style.width = i + "%";
+                    $('#broadcastModal').modal('hide');
+                    $('#exampleModal').modal('hide');
+                    $("button").prop('disabled', false);
+                } else {
+                    width++;
+                    elem.style.width = width + "%";
+                    $("button").prop('disabled', true);
+                }
+                }
+            }
+            }
+
+            $('.disco').on('click', function(event) {
+                socket.emit('logout');
+                var msg = false;
+                
+                var url = "http://localhost:3000/disconect";
+                $.ajax(url, {
+                    dataType: 'json', // type of response data
+                    timeout: 500,     // timeout milliseconds
+                    type: "POST",
+                    data: { message: msg},
+                    success: function (data,status,xhr) {
+                        
+                        console.log(data.waconect);
+                    }
+                });    
+            });
+
+
+            function generateUUID() {
+                var d = new Date().getTime();
+                
+                if( window.performance && typeof window.performance.now === "function" ){
+                    d += performance.now();
+                }
+                
+                var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c){
+                    var r = (d + Math.random()*16)%16 | 0;
+                    d = Math.floor(d/16);
+                    return (c=='x' ? r : (r&0x3|0x8)).toString(16);
+                });
+
+                return uuid;
+            }
+
+           
+            $('#keygen').on('click',function() {
+                $('#apikey').val(generateUUID());
+
+                var msg = $('#apikey').val();
+                var user = users;
+                var url = "http://localhost:3000/generet";
+                $.ajax(url, {
+                    dataType: 'json', // type of response data
+                    timeout: 500,     // timeout milliseconds
+                    type: "POST",
+                    data: { message: msg, user: user},
+                    success: function (data,status,xhr) {
+                        console.log(data);
+                        udapteApiKey ('apikey', msg);
+                    }
+                });    
+            });
+
+
+            function udapteApiKey (name, data) {
+                var updateApi = localStorage.getItem(apikey);
+                updateApi !== "" ? localStorage.setItem(name, data) : false;
+            };
+
+            socket.on('message', function(msg) {
+                    $('.logs').html("");
+                    $('.logs').append($('<li class="list-group-item">').text(msg));
+                });
+
+            socket.on('qr', function(src) {
+                var count = 0;
+                var interval = setInterval(function() {
+                    count++
+                    $('#qrcode').attr('src', src);
+                    $('#qrcode').show();
+                    $('.menu').hide();
+                    $('.logs').html("");
+                    $('.logs').append($('<li class="list-group-item">').text(`Scan QR Code ${count}`));
+                    if (count == 10) {
+                        $('.logs').html("");
+                        $('#qrcode').attr('src','https://vafloc01.s3.amazonaws.com/WBStatic/site1102601/dist/img/loader.gif');
+                        $('.logs').append($('<li class="list-group-item">').text('QR Code Refres...'));
+                        move()
+                            clearInterval(interval)
+                        }
+                    }, 1000);
+                });
+            
+            socket.on('waconect', function(msg) {
+                (msg == true) ?  $('.disco').show() :  $('.disco').hide();
+            });
+
+            socket.on('ready', function(data) {
+                    $('#qrcode').hide();
+                    $('.menu').show();
+                });
+
+            socket.on('authenticated', function(data) {
+                    $('#qrcode').hide();
+                    $('.menu').show();
+                });
+			
+
+		});
+	</script>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTP WHASTAPP</title>
+    <!-- Custom fonts for this template-->
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+<div class="container p-5">
+    <div class="row">
+    <div class="col-sm">
+    </div>
+    <div class="col-sm">
+        <div class="modal-content modal-sm">
+            <div class="modal-body">
+            <h5 class="card-title"><span class="text-success"><i class="fab fa-whatsapp"></i> WHASTAPP API</h5>
+                <p class="card-text small">OTP-WA versio 1.0</p>
+                   <div class="mb-3">
+                        <input type="number" class="form-control" id="users" value="088233064633" placeholder="0881xxxxxxxx" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" class="form-control" id="password" value="otpwa" placeholder="Password">
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn-primary btn" id="login"><b>Login</b></button>
+                    </div>  
+            </div>
+            <div class="card-footer small">
+                make with love  <span class="text-danger"> &#10084;</span> <a href="https://bagustilas.github.io/">@bagus.tilas</a>
+             </div>
+        </div>
+    </div>
+    <div class="col-sm">
+    </div> 
+</div>
+</body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" crossorigin="anonymous"></script>    
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"></script>
+    <script>
+		$(document).ready(function() {
+            $('#login').on('click', function(event) {
+                var u = $("#users").val();
+                var p = $("#password").val();
+                var url = "http://localhost:3000/auth";
+
+                $.ajax(url, {
+                    dataType: 'json', // type of response data
+                    timeout: 500,     // timeout milliseconds
+                    type: "POST",
+                    contentType: "application/x-www-form-urlencoded",
+                    data: { username: u, password: p},
+                    success: function (data,status,xhr) {
+                        console.log(data);
+                        if(data.login == true){
+                            location.href="http://localhost:3000/apps";
+                            localStorage.setItem('users',data.users);
+                            localStorage.setItem( 'apikey',data.dataApi[0].api_key);
+                        }else{
+                            alert("opps...! ada yang salah");
+                        }
+                    },
+                });          
+
+            });
+        });     
+    </script>    
+</html>       
