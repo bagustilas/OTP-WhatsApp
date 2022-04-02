@@ -124,7 +124,7 @@
                     timeout: 500,     // timeout milliseconds
                     type: "POST",
                     contentType: "application/x-www-form-urlencoded",
-                    data: { number: n, message: p},
+                    data: { number: n, message: p, api_key: getApi},
                     success: function (data,status,xhr) {
                         console.log(data);
                         move();
@@ -159,7 +159,8 @@
                     dataType: 'json', // type of response data
                     timeout: 500,     // timeout milliseconds
                     type: "POST",
-                    data: { number: x, message: y},
+                    contentType: "application/x-www-form-urlencoded",
+                    data: { number: x, message: y, api_key: getApi},
                     success: function (data,status,xhr) {
                         console.log(data);
                     }
