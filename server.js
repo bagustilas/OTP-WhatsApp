@@ -1,4 +1,4 @@
-const { Client, LocalAuth, ClientInfo } = require("whatsapp-web.js");
+const { Client, LocalAuth } = require("whatsapp-web.js");
 const qrcode = require("qrcode");
 const express = require("express");
 const sessions = require("express-session");
@@ -7,11 +7,10 @@ const socketIO = require("socket.io");
 const http = require("http");
 const bodyParser = require("body-parser");
 const path = require("path");
-const { createClient } = require("@supabase/supabase-js");
-require("dotenv").config();
 
 const { body, validationResult } = require("express-validator");
 const { phoneNumberFormatter } = require("./helper/formatPhone.js");
+const { getUser, UpdateUser, cekApiKey } = require("./model/index");
 
 //server connection
 const app = express();
@@ -26,36 +25,6 @@ const io = socketIO(server, {
   },
   allowEIO3: true,
 });
-
-const SUPABASE_URL = process.env.API_URL;
-const SUPABASE_KEY = process.env.API_KEY;
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-//get api_key supabase
-const getUser = async (user) => {
-  const { data, err } = await supabase
-    .from("api_users")
-    .select("api_key,created_at")
-    .eq("nohp", user);
-  return data;
-};
-
-//update api_key supabase
-const UpdateUser = async (api, user) => {
-  const { data, error } = await supabase
-    .from("api_users")
-    .update({ api_key: api })
-    .eq("nohp", user);
-};
-
-//cek api_key supabase
-const cekApiKey = async (key) => {
-  const { data, err } = await supabase
-    .from("api_users")
-    .select("api_key,created_at")
-    .eq("api_key", key);
-  return data;
-};
 
 const oneDay = 1000 * 60 * 60 * 24;
 var session;
