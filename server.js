@@ -27,6 +27,8 @@ const io = socketIO(server, {
 });
 
 const oneDay = 1000 * 60 * 60 * 24;
+const username = "8888";
+const passowrd = "otpwa"
 var session;
 
 app.use(
@@ -58,7 +60,7 @@ app.post("/auth", (req, res) => {
   let user = req.body.username;
   let pass = req.body.password;
 
-  if (user == "088233064633" && pass == "otpwa") {
+  if (user == username && pass == password) {
     req.session.waconect == true ? (cw = req.session.waconect) : (cw = false);
 
     session = req.session;
@@ -66,15 +68,13 @@ app.post("/auth", (req, res) => {
     session.login = true;
     session.waconect = cw;
     console.log(req.session);
-
-    getUser(user).then((response) => {
-      res.json({
+    
+    res.json({
         status: 200,
         login: true,
         users: session.userid,
-        dataApi: response,
       });
-    });
+
   } else {
     res.json({
       status: 500,
