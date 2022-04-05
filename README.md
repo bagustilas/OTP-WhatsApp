@@ -9,7 +9,7 @@ Tools yang harus disiapkan :
 
 bisa di jalankan di HEROKU
 ----------------------------------------------------------------------------------------------------
-demo : https://otp-whatsapp.herokuapp.com/
+demo : <a href="https://otp-whatsapp.herokuapp.com/" target="_blank">OTP_WhatsApp</a>
 
 ******| HEROKU |******
 
